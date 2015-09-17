@@ -25,7 +25,7 @@ public final class JTATransactionPropagatorConstants {
 
   public static final String DEFAULT_SERVICE_DESCRIPTION = "JTA Transaction Propagator Component";
 
-  public static final String SERVICE_TRANSACTION_MANAGER = "transactionManager.target";
+  public static final String ATTR_TRANSACTION_MANAGER = "transactionManager.target";
 
   private JTATransactionPropagatorConstants() {
   }

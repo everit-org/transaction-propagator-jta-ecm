@@ -35,7 +35,7 @@ import org.osgi.framework.Constants;
 import aQute.bnd.annotation.headers.ProvideCapability;
 
 /**
- * JTA Transaction Propagator component. ECM component for {@link TransactionPropagator} interface.
+ * ECM component for {@link TransactionPropagator} interface based on JTA Transaction Propagator.
  */
 @Component(componentId = JTATransactionPropagatorConstants.COMPONENT_ID,
     configurationPolicy = ConfigurationPolicy.OPTIONAL)
@@ -43,14 +43,13 @@ import aQute.bnd.annotation.headers.ProvideCapability;
     value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
-        defaultValue = JTATransactionPropagatorConstants.DEFAULT_SERVICE_DESCRIPTION),
-})
+        defaultValue = JTATransactionPropagatorConstants.DEFAULT_SERVICE_DESCRIPTION) })
 @Service
 public class JTATransactionPropagatorComponent implements TransactionPropagator {
 
   private TransactionManager transactionManager;
 
-  private JTATransactionPropagator transactionPropagator;
+  private TransactionPropagator transactionPropagator;
 
   @Activate
   public void activate() {
@@ -79,10 +78,10 @@ public class JTATransactionPropagatorComponent implements TransactionPropagator 
 
   @Override
   public <R> R requiresNew(final Supplier<R> action) {
-    return transactionPropagator.required(action);
+    return transactionPropagator.requiresNew(action);
   }
 
-  @ServiceRef(attributeId = JTATransactionPropagatorConstants.SERVICE_TRANSACTION_MANAGER,
+  @ServiceRef(attributeId = JTATransactionPropagatorConstants.ATTR_TRANSACTION_MANAGER,
       defaultValue = "")
   public void setTransactionManager(final TransactionManager transactionManager) {
     this.transactionManager = transactionManager;
