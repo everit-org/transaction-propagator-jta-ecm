@@ -15,22 +15,24 @@
  */
 package org.everit.transaction.propagator.jta.ecm.internal;
 
-import java.util.function.Supplier;
+import java.util.Hashtable;
 
 import javax.transaction.TransactionManager;
 
 import org.everit.osgi.ecm.annotation.Activate;
 import org.everit.osgi.ecm.annotation.Component;
 import org.everit.osgi.ecm.annotation.ConfigurationPolicy;
-import org.everit.osgi.ecm.annotation.Service;
+import org.everit.osgi.ecm.annotation.Deactivate;
 import org.everit.osgi.ecm.annotation.ServiceRef;
 import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
+import org.everit.osgi.ecm.component.ComponentContext;
 import org.everit.osgi.ecm.extender.ECMExtenderConstants;
 import org.everit.transaction.propagator.TransactionPropagator;
 import org.everit.transaction.propagator.jta.JTATransactionPropagator;
 import org.everit.transaction.propagator.jta.ecm.JTATransactionPropagatorConstants;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceRegistration;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
 
@@ -44,52 +46,43 @@ import aQute.bnd.annotation.headers.ProvideCapability;
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
         defaultValue = JTATransactionPropagatorConstants.DEFAULT_SERVICE_DESCRIPTION) })
-@Service
-public class JTATransactionPropagatorComponent implements TransactionPropagator {
+public class JTATransactionPropagatorComponent {
+
+  private ServiceRegistration<TransactionPropagator> serviceRegistration;
 
   private TransactionManager transactionManager;
 
-  private TransactionPropagator transactionPropagator;
-
+  /**
+   * The activate method that registers a {@link JTATransactionPropagator} OSGi service.
+   */
   @Activate
-  public void activate() {
-    transactionPropagator = new JTATransactionPropagator(transactionManager);
+  public void activate(final ComponentContext<JTATransactionPropagatorComponent> componentContext) {
+
+    TransactionPropagator transactionPropagator = new JTATransactionPropagator(transactionManager);
+
+    Hashtable<String, Object> properties = new Hashtable<>();
+    properties.putAll(componentContext.getProperties());
+
+    serviceRegistration = componentContext.registerService(
+        TransactionPropagator.class,
+        transactionPropagator,
+        properties);
   }
 
-  @Override
-  public <R> R mandatory(final Supplier<R> action) {
-    return transactionPropagator.mandatory(action);
-  }
-
-  @Override
-  public <R> R never(final Supplier<R> action) {
-    return transactionPropagator.never(action);
-  }
-
-  @Override
-  public <R> R notSupported(final Supplier<R> action) {
-    return transactionPropagator.notSupported(action);
-  }
-
-  @Override
-  public <R> R required(final Supplier<R> action) {
-    return transactionPropagator.required(action);
-  }
-
-  @Override
-  public <R> R requiresNew(final Supplier<R> action) {
-    return transactionPropagator.requiresNew(action);
+  /**
+   * Unregisters the {@link JTATransactionPropagator} OSGi service.
+   */
+  @Deactivate
+  public void deactivate() {
+    if (serviceRegistration != null) {
+      serviceRegistration.unregister();
+    }
   }
 
   @ServiceRef(attributeId = JTATransactionPropagatorConstants.ATTR_TRANSACTION_MANAGER,
       defaultValue = "")
   public void setTransactionManager(final TransactionManager transactionManager) {
     this.transactionManager = transactionManager;
-  }
-
-  @Override
-  public <R> R supports(final Supplier<R> action) {
-    return transactionPropagator.supports(action);
   }
 
 }
