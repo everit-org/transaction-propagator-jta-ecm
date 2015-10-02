@@ -40,13 +40,23 @@ import aQute.bnd.annotation.headers.ProvideCapability;
  * ECM component for {@link TransactionPropagator} interface based on JTA Transaction Propagator.
  */
 @Component(componentId = JTATransactionPropagatorConstants.COMPONENT_ID,
-    configurationPolicy = ConfigurationPolicy.OPTIONAL)
+    configurationPolicy = ConfigurationPolicy.OPTIONAL,
+    label = "Everit JTA Transaction Propagator Component",
+    description = "ECM component for JTA Transaction Propagator")
 @ProvideCapability(ns = ECMExtenderConstants.CAPABILITY_NS_COMPONENT,
     value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
-        defaultValue = JTATransactionPropagatorConstants.DEFAULT_SERVICE_DESCRIPTION) })
+        defaultValue = JTATransactionPropagatorConstants.DEFAULT_SERVICE_DESCRIPTION,
+        priority = JTATransactionPropagatorComponent.P01_SERVICE_DESCRIPTION,
+        label = "Service Description",
+        description = "The description of this component configuration."
+            + "It is used to easily identify the service registered by this component.") })
 public class JTATransactionPropagatorComponent {
+
+  public static final int P01_SERVICE_DESCRIPTION = 1;
+
+  public static final int P02_TRANSACTION_MANAGER = 2;
 
   private ServiceRegistration<TransactionPropagator> serviceRegistration;
 
@@ -80,7 +90,10 @@ public class JTATransactionPropagatorComponent {
   }
 
   @ServiceRef(attributeId = JTATransactionPropagatorConstants.ATTR_TRANSACTION_MANAGER,
-      defaultValue = "")
+      defaultValue = "",
+      attributePriority = P02_TRANSACTION_MANAGER,
+      label = "TransactionManager",
+      description = "OSGi service filter for javax.transaction.TransactionManager")
   public void setTransactionManager(final TransactionManager transactionManager) {
     this.transactionManager = transactionManager;
   }
