@@ -18,7 +18,7 @@
   <parent>
     <groupId>org.everit.transaction</groupId>
     <artifactId>org.everit.transaction.propagator.jta.ecm.parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <groupId>org.everit.transaction</groupId>
@@ -122,22 +122,9 @@
     <dependency>
       <groupId>org.everit.transaction</groupId>
       <artifactId>org.everit.transaction.propagator.jta.ecm</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
 
-    <!-- Basic dependencies -->
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <version>6.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <version>5.0.0</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.everit.osgi.dev</groupId>
       <artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
