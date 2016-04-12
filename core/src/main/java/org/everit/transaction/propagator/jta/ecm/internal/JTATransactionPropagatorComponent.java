@@ -24,28 +24,27 @@ import org.everit.osgi.ecm.annotation.Component;
 import org.everit.osgi.ecm.annotation.ConfigurationPolicy;
 import org.everit.osgi.ecm.annotation.Deactivate;
 import org.everit.osgi.ecm.annotation.ManualService;
+import org.everit.osgi.ecm.annotation.ManualServices;
 import org.everit.osgi.ecm.annotation.ServiceRef;
 import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
 import org.everit.osgi.ecm.component.ComponentContext;
-import org.everit.osgi.ecm.extender.ECMExtenderConstants;
+import org.everit.osgi.ecm.extender.ExtendComponent;
 import org.everit.transaction.propagator.TransactionPropagator;
 import org.everit.transaction.propagator.jta.JTATransactionPropagator;
 import org.everit.transaction.propagator.jta.ecm.JTATransactionPropagatorConstants;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
-
 /**
  * ECM component for {@link TransactionPropagator} interface based on JTA Transaction Propagator.
  */
 @Component(componentId = JTATransactionPropagatorConstants.COMPONENT_ID,
-    configurationPolicy = ConfigurationPolicy.OPTIONAL,
-    label = "Everit JTA Transaction Propagator Component",
-    description = "ECM component for JTA Transaction Propagator")
-@ProvideCapability(ns = ECMExtenderConstants.CAPABILITY_NS_COMPONENT,
-    value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
+    configurationPolicy = ConfigurationPolicy.FACTORY,
+    label = "Everit JTA Transaction Propagator",
+    description = "Propagate JTA transactions easily with functional interfaces"
+        + " and lambda expressions")
+@ExtendComponent
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
         defaultValue = JTATransactionPropagatorConstants.DEFAULT_SERVICE_DESCRIPTION,
@@ -53,7 +52,7 @@ import aQute.bnd.annotation.headers.ProvideCapability;
         label = "Service Description",
         description = "The description of this component configuration."
             + "It is used to easily identify the service registered by this component.") })
-@ManualService(TransactionPropagator.class)
+@ManualServices(@ManualService(TransactionPropagator.class))
 public class JTATransactionPropagatorComponent {
 
   public static final int P01_SERVICE_DESCRIPTION = 1;
@@ -95,7 +94,7 @@ public class JTATransactionPropagatorComponent {
       defaultValue = "",
       attributePriority = P02_TRANSACTION_MANAGER,
       label = "TransactionManager",
-      description = "OSGi service filter for javax.transaction.TransactionManager")
+      description = "Filter expression for JTA TransactionManager OSGi service")
   public void setTransactionManager(final TransactionManager transactionManager) {
     this.transactionManager = transactionManager;
   }

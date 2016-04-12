@@ -20,12 +20,13 @@ package org.everit.transaction.propagator.jta.ecm;
  */
 public final class JTATransactionPropagatorConstants {
 
+  public static final String ATTR_TRANSACTION_MANAGER = "transactionManager.target";
+
   public static final String COMPONENT_ID =
       "org.everit.transaction.propagator.jta.ecm.JTATransactionPropagator";
 
-  public static final String DEFAULT_SERVICE_DESCRIPTION = "JTA Transaction Propagator Component";
-
-  public static final String ATTR_TRANSACTION_MANAGER = "transactionManager.target";
+  public static final String DEFAULT_SERVICE_DESCRIPTION =
+      "Propagate JTA transactions easily with functional interfaces";
 
   private JTATransactionPropagatorConstants() {
   }
